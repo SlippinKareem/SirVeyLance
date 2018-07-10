@@ -90,7 +90,7 @@
                     <div style="border: none;height: 100%; width: 110%;position: absolute; margin-top: 8px; margin-left: -10px;">
                         <!-- Create the preview video element -->
                         <br>
-                        <div id="prev" style="background-color: #e0e0ff; height: 480px; width: 640px; margin-left: 8px; box-shadow: 0 0 20px rgb(255, 255, 255)">
+                        <div id="prev" style="height: 480px; width: 640px; margin-left: 8px; box-shadow: 0 0 20px rgb(255, 255, 255)">
 
                         </div>
 
@@ -159,7 +159,8 @@
             jpeg_quality: 90
         });
         Webcam.attach('#prev');
-
+        Webcam.freeze();
+        
         function dataURItoBlob(dataURI) {
             // convert base64 to raw binary data held in a string
             var byteString = atob(dataURI.split(',')[1]);
@@ -289,6 +290,7 @@
         function st() {
             if (x == 0) {
                 t.clear().draw();
+                Webcam.unfreeze();
                 var now = new Date();
                 var date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
                 var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
@@ -342,6 +344,7 @@
 
                 document.getElementsByClassName('rec-btn')[0].style.backgroundColor = "red";
             } else {
+                Webcam.freeze();
                 fetch('http://localhost:4125/stop', {
                     method: 'POST'
                 }).then(
