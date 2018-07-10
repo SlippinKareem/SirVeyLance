@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sir Vey Lance</title>
+
+<meta name="viewport" content="width=device-width">
+
+  <style>
+  html, body {margin: 0; height: 100%; overflow: hidden;
+  }
+
+  </style>
+</head>
+
+<body style="background: linear-gradient(to right, #000000 , #00a6cf)">
+    <img src="public/img/logo.png" style="position: fixed; right: 10px ;top: 10px"/>
+
+
+<iframe id="f" src="public/login-signup.html" width="100%" height="100%" border='none' frameborder="0"></iframe> 
+
+
+<script type="text/javascript" src="public/js/socket.io.min.js"></script>
+
+<script>
+
+  var mem = {};
+  localStorage.setItem('myStorage', JSON.stringify({}));
+  //to get to tbody in the streaming page.[in case of connection established]
+  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("tbody")[0]
+
+
+  //setting data path
+  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("input")
+
+  //change username and password
+  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("input")
+
+  //summary table
+  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("tbody")[0]
+
+  //stats table
+  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("tbody")[0]
+
+
+  //title of the tab
+  //document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.title
+  
+  
+    var socket = io.connect('http://localhost:6869');
+    socket.on('connect', function() {
+        
+    });
+    //socket.emit('startRecording')
+    socket.on('my', function(msg) {
+            console.log(msg)
+        
+    });
+    
+
+
+
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function getExternCookie(cname) {
+
+var name = cname + "=";
+var decodedCookie = decodeURIComponent(document.getElementById("f").contentDocument.cookie);
+var ca = decodedCookie.split(';');
+for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+    }
+}
+return "";
+}
+
+
+
+  mem['logged'] = false;
+  var usrname = "";
+
+        
+
+
+  //(document.getElementById("f").contentDocument.location).watch('pathname', 
+  setInterval(function(){
+    //to get data from the local storage
+    /////////////////////var obj = JSON.parse(localStorage.getItem('myStorage'));/////////////////////////////
+    if(mem['logged']){
+      mem = JSON.parse(localStorage.getItem('myStorage'));
+    }
+    if(!mem['logged'] && !(document.getElementById("f").contentDocument.location.pathname).includes("public/login-signup.html")){
+      document.getElementById("f").setAttribute("src", "public/login-signup.html");
+      mem = {};
+    }
+    if(document.getElementById("f").contentDocument.location.pathname == '/signup' && !mem['logged']){
+      document.cookie = document.getElementById("f").contentDocument.cookie;
+      setCookie('name', getExternCookie('name'), 10);
+      setCookie('new', getExternCookie('new'), 10);
+      usrname = getExternCookie('name');
+      mem['userName'] = usrname.slice(1, usrname.length-1);
+      mem['isNew'] = getExternCookie('new');
+      if(getExternCookie('name') == ''){
+        
+        document.getElementById("f").setAttribute("src", "public/login-signup.html");
+        setTimeout(function () {
+          alert('Email might be already registered!!');
+            
+        }, 200);
+      }
+      else {
+        document.getElementById("f").setAttribute("src", "public/index-newuser.html");
+        mem['logged'] = true;
+        localStorage.setItem('myStorage', JSON.stringify(mem));
+
+      }
+
+    }
+    if(document.getElementById("f").contentDocument.location.pathname == '/login' && !mem['logged']){
+      document.cookie = document.getElementById("f").contentDocument.cookie;
+      setCookie('name', getExternCookie('name'), 10);
+      setCookie('new', getExternCookie('new'), 10);
+      usrname = getExternCookie('name');
+      mem['userName'] = usrname.slice(1, usrname.length-1);
+      mem['isNew'] = getExternCookie('new');
+      if(getExternCookie('name') == ''){
+        
+        document.getElementById("f").setAttribute("src", "public/login-signup.html");
+        setTimeout(function () {
+          alert('Email and Password may not match any registered user!!');
+            
+        }, 200);
+      }
+      else {
+        document.getElementById("f").setAttribute("src", "public/index.html");
+        mem['logged'] = true;
+
+        localStorage.setItem('myStorage', JSON.stringify(mem));
+
+      }
+
+    }
+    if(usrname != "")setCookie('name', usrname, 10);
+
+  }, 100);
+  
+  
+</script>
+</body>
+
+</html>

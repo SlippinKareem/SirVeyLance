@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>upload video</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <style>
+            html, body {
+              -webkit-touch-callout: none;
+              -webkit-user-select: none;
+              -khtml-user-select: none;
+              -moz-user-select: none;
+              -ms-user-select: none;
+              user-select: none;  
+          }
+        </style>
+
+
+</head>
+
+<body style="background: linear-gradient(to right, #000000 , #00a6cf)">
+        <br/>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-11" style="padding: 25px 25px 10px 25px;background: linear-gradient(to top, #b3b3b3 , #fefeff);border-radius: 15px 15px 15px 15px; box-shadow: 0 4px 10px 4px rgba(193, 189, 186, 0.3); margin-left: 65px">
+                <div class="col-md-8 align-middle" style="height: 580px;border-radius: 15px 15px 15px 15px; ">
+
+                    <div style="border: none;height: 100%; width: 110%;position: absolute; margin-top: 8px; margin-left: -10px;">
+                              <!-- Create the preview video element -->
+                              <br>
+                        <video style="width: 640px; height: 480px;margin-left: 10px; margin-top: 15px; box-shadow: 0 0 20px rgb(255, 255, 255)" id="videoarea" controls="controls" type='video/mp4' poster="" src="" autoplay></video>
+
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+                    <table id="table_id" class="display">
+                        <thead>
+                            <tr>
+                                <th class="dt-head-center">Video</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="js/index.js"></script>
+    <script type="text/javascript" src="socket.io.min.js"></script>
+
+    <script type="text/javascript">
+
+
+
+
+
+        var t = $('table#table_id').DataTable({
+                                    columnDefs: [
+                                    {
+                                            targets: 0,
+                                            className: 'dt-body-center'
+                                        }
+                                    ]
+                                    });
+        t.order([0, 'desc']);
+
+        var socket = io.connect('http://localhost:4125');
+        socket.on('connect', function () {
+            console.log('aaaa');
+            socket.emit('get');
+
+        });
+
+        socket.on('postt', function (msg) {
+            t.row.add([
+                msg.split('.')[0]
+            ]).draw(false);
+        });
+       
+
+        $('.dataTable').on('click', 'tbody td', function () {
+
+            //get textContent of the TD
+            var arr = window.location.href.split('/');
+            arr.pop(); arr.pop(); arr.pop(); arr.pop(); arr.push("recordings"); arr.push(this.textContent);
+            document.getElementById('videoarea').src = arr.join('/') + ".webm";
+            document.getElementById('videoarea').load();
+            var playPromise = document.getElementById('videoarea').play();
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    // Automatic playback started!
+                }).catch(function(error) {
+                    alert("This recording might be corrupted or not ready yet!!");
+                });
+}
+            console.log(document.getElementById('videoarea').getAttribute("src"))
+
+        })
+
+
+    </script>
+
+</body>
+
+</html>
