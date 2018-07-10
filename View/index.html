@@ -27,39 +27,12 @@
 
   var mem = {};
   localStorage.setItem('myStorage', JSON.stringify({}));
-  //to get to tbody in the streaming page.[in case of connection established]
-  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("tbody")[0]
-
-
-  //setting data path
-  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("input")
-
-  //change username and password
-  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("input")
-
-  //summary table
-  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("tbody")[0]
-
-  //stats table
-  //f = document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("tbody")[0]
-
-
-  //title of the tab
-  //document.getElementById("f").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.title
   
   
     var socket = io.connect('http://localhost:6869');
     socket.on('connect', function() {
         
     });
-    //socket.emit('startRecording')
-    socket.on('my', function(msg) {
-            console.log(msg)
-        
-    });
-    
-
-
 
   function setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -110,10 +83,7 @@ return "";
         
 
 
-  //(document.getElementById("f").contentDocument.location).watch('pathname', 
   setInterval(function(){
-    //to get data from the local storage
-    /////////////////////var obj = JSON.parse(localStorage.getItem('myStorage'));/////////////////////////////
     if(mem['logged']){
       mem = JSON.parse(localStorage.getItem('myStorage'));
     }
