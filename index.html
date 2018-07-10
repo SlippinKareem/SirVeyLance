@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Radio and Checkbox Styles</title>
+  <link href="https://fonts.googleapis.com/css?family=Maven+Pro|Yrsa" rel="stylesheet">
+
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    html,
+    body {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .button {
+      background-color: #244a87;
+      border: none;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      transition-duration: 0.4s;
+    }
+
+    button:disabled,
+    button[disabled] {
+      border: 1px solid #999999;
+      background-color: #cccccc;
+      color: #666666;
+    }
+
+    .button2:hover {
+      box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+  </style>
+
+</head>
+
+<body style="overflow-y: hidden;">
+
+
+  <div class="two-column">
+    <div class="single-col">
+      <div class="styled-input-container styled-input--rounded">
+        <div class="styled-input-single">
+          <input type="checkbox" name="fieldset-7" id="1" />
+          <label for="1">Luggage</label>
+        </div>
+        <div class="styled-input-single">
+          <input type="checkbox" name="fieldset-7" id="2" />
+          <label for="2">Parking</label>
+        </div>
+        <div class="styled-input-single">
+          <input type="checkbox" name="fieldset-7" id="3" />
+          <label for="3">Crowd</label>
+        </div>
+        <div class="styled-input-single">
+          <input type="checkbox" name="fieldset-7" id="5" disabled/>
+          <label for="5" style="color: rgba(0,0,0,0.3)">Fire</label>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="single-col">
+      <div class="styled-input-container styled-input--rounded">
+        <div class="styled-input-single">
+          <input type="checkbox" name="fieldset-7" id="4" />
+          <label for="4">Weapons</label>
+        </div>
+
+        <div id="d1">
+          <input style="width:50px; margin-top: 20px; margin-left: -15px; height: 20px;" type="number" name="fieldset-7" id="pt" disabled/>
+          <label for="pt" style="color: #666666">Time(sec)</label>
+          <button class="button button2" type="button" id="appt" disabled>APPLY</button>
+        </div>
+        <div id="d2">
+          <input style="width:50px; margin-top: 35px; margin-left: -15px; height: 20px;" type="number" name="fieldset-7" id="cn" disabled/>
+          <label style="margin: 5px; color: #666666" for="cn">Number</label>
+          <button class="button button2" type="button" id="apcn" disabled>APPLY</button>
+        </div>
+
+
+
+        <div class="styled-input-single" style="margin-top: 10px;">
+          <input type="checkbox" name="fieldset-7" id="6" disabled/>
+          <label for="6" style="color: rgba(0,0,0,0.3)">Smoke</label>
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+  <script type="text/javascript" src="../js/socket.io.min.js"></script>
+  <script>
+    var socket = io.connect('http://localhost:6869');
+    var obj = JSON.parse(localStorage.getItem('myStorage'));
+    var xz = obj.isNew;
+    document.getElementById('pt').disabled = true;
+    document.getElementById('appt').disabled = true;
+    document.getElementById('cn').disabled = true;
+    document.getElementById('apcn').disabled = true;
+
+    socket.on('connect', function () {
+      xz = obj.isNew;
+
+      socket.emit('getSettings', obj.userName);
+
+      obj.isNew = '0';
+      localStorage.setItem('myStorage', JSON.stringify(obj));
+    });
+    socket.on('returnSettings', function (settings) {
+      $("input[id=" + settings['s'] + "]").trigger('click');
+      if (settings['s'] == 2) {
+        document.getElementById('pt').disabled = false;
+        document.getElementById('pt').value = (settings['e']);
+        document.getElementById('appt').disabled = false;
+      }
+      if (settings['s'] == 3) {
+        document.getElementById('cn').disabled = false;
+        document.getElementById('cn').value = (settings['e']);
+        document.getElementById('apcn').disabled = false;
+      }
+      xz = false;
+    });
+
+
+    $("#appt").click(function () {
+      socket.emit('parking', { 'user': obj.userName, 'in': document.getElementById('pt').value });
+    });
+    $("#apcn").click(function () {
+      socket.emit('crowd', { 'user': obj.userName, 'in': document.getElementById('cn').value });
+    });
+
+    $("input").change(function () {
+
+
+      if (this.checked) {
+        socket.emit('postUserAction', { 'action': this.id, 'user': obj.userName });
+        if (this.id == 2) {
+          document.getElementById('pt').disabled = false;
+          document.getElementById('pt').value = 4;
+          document.getElementById('appt').disabled = false;
+        }
+        if (this.id == 3) {
+          document.getElementById('cn').disabled = false;
+          document.getElementById('cn').value = 4;
+          document.getElementById('apcn').disabled = false;
+        }
+
+      }
+      if (!this.checked) {
+        if (!xz) {
+          xz = true;
+        } else {
+          socket.emit('deleteUserAction', { 'action': this.id, 'user': obj.userName });
+          if (this.id == 2) {
+            document.getElementById('pt').disabled = true;
+            document.getElementById('pt').value = '';
+            document.getElementById('appt').disabled = true;
+          }
+          if (this.id == 3) {
+            document.getElementById('cn').disabled = true;
+            document.getElementById('cn').value = '';
+            document.getElementById('apcn').disabled = true;
+          }
+        }
+      }
+    });
+
+
+
+
+  </script>
+
+
+</body>
+
+</html>
