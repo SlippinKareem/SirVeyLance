@@ -49,7 +49,6 @@ def userSettings(msg):
     usr = str(data[0])
     cursor.execute("SELECT * from user_settings where user_settings.userID = '" + str(data[0]) + "';")
     data = cursor.fetchall()
-    print(len(data))
     for i in range(len(data)):
           
           emit('returnSettings', {'s': str(data[i][1]), 'e': str(data[i][2])})
@@ -176,8 +175,6 @@ def _startRec(msg):
     global last
     last = [0] * 6
     current = msg['gt']
-    print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-    print(current)
 
 @socketio.on('nn')
 def _nn(msg):
@@ -185,7 +182,6 @@ def _nn(msg):
     global last
     last = [0] * 6
     current = msg['gt']
-    print(current)
 
 def getNextFrame():
       files = [s for s in os.listdir('./frames')
@@ -212,7 +208,6 @@ def GF():
                      mimetype='image/jpg'
                )
       os.remove(f)
-      print(str(time.time()-st))
       if 'IMG0.jpeg' in f:
             return ret, 205
       return ret
@@ -251,7 +246,6 @@ def on_action_gded(msg):
             msg['s'] = msg['s']/fps
             emit('update', msg, broadcast=True, include_self=False)
       if msg['e'] == 2:#end
-            print("UPDATE `surv_summary` SET `end`=" + str(msg['s']/fps) +" WHERE `start`="+ str(last[msg['a'] - 1])+" and `userID`=" +usr +" and `actionID`=" +str(msg['a']) + " and `gt`='"+current +"';")
             cursor.execute("UPDATE `surv_summary` SET `end`=" + str(msg['s']/fps) +" WHERE `start`="+ str(last[msg['a'] - 1])+" and `userID`=" +usr +" and `actionID`=" +str(msg['a']) + " and `gt`='"+current +"';")
             conn.commit()
             last[msg['a'] - 1] = 0
@@ -267,8 +261,6 @@ def signup():
       salt = "sVl"
       password = password + salt
       password = hashlib.md5(password.encode()).hexdigest()
-      print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-      print(password)
 
       cursor.execute("SELECT * from users where users.Name = '" + email + "';")
       data = cursor.fetchall()
@@ -324,7 +316,6 @@ def uploadVid():
       global fps
 
       if request.method == 'POST':
-            print(request.files)
             file = request.files['file']
             if file:
                   filename = secure_filename('vid')
@@ -347,7 +338,6 @@ def uploadVid():
                         emit('fail', broadcast=True)
                         break
                   count += 1
-                  print(cur)
             vidcap.release()
             return 'file uploaded successfully'
 
