@@ -64,17 +64,14 @@ def _start():
                   try:
                         os.remove(f)
                   except:
-                        print(f)
+                        pass
                   
             try: 
                   f = getNextFrame()
             except:
-                  print('error')
-            if done: 
-                  print(done)
+                  pass
+            
             if time.time()-st > 3 and done:
-                  print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-                  #done = False
                   break
 
 
@@ -82,8 +79,7 @@ def _start():
 def ss_top():
       global done
       done = True
-      print('stop')
-      return 'file uploaded successfully'
+      return 'done'
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
@@ -110,7 +106,6 @@ def uploadVid():
 
             success,image = vidcap.read()
             height , width , layers =  image.shape
-            print(   '{date:%Y-%m-%d %H:%M:%S}.avi'.format( date=datetime.datetime.now())  )
             out = cv2.VideoWriter('recordings/{date:%Y-%m-%d-%H-%M-%S}.webm'.format( date=datetime.datetime.now()),cv2.VideoWriter_fourcc(*'VP80'), fps, (width,height), True)
             success = True
             while success:
