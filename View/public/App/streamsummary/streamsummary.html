@@ -1,106 +1,106 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>summary</title>
+    <meta charset="UTF-8">
+    <title>summary</title>
 
-<link href="css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery-3.3.1.min.js"></script>
-<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>
-      <link rel="stylesheet" href="css/main.css">
-      <style>
-      html, body {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;  
-    }
-    
-</style>
-  
+    <link href="css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        html,
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+
 </head>
 
 <body style="background: linear-gradient(to right, #000000 , #00a6cf)">
-        <br/>
+    <br/>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-md-11" style="padding: 25px 25px 10px 25px;background: linear-gradient(to top, #b3b3b3 , #fefeff);border-radius: 15px 15px 15px 15px; box-shadow: 0 4px 10px 4px rgba(193, 189, 186, 0.3); margin-left: 65px">
-    <table id="table_id" class="display">
-    <thead>
-        <tr>
-            <th class="dt-head-center">Action</th>
-            <th class="dt-head-center">Start time</th>
-            <th class="dt-head-center">End time</th>
-            <th class="dt-head-center">Recording</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-        
-		
-    </tbody>
-</table>
-</div>
-</div>
-</div>
-  
-
-<script src="js/index.js"></script>
-
-<script type="text/javascript" src="../../js/socket.io.min.js"></script>
-<script>
-
-    function tt(x){
-        //x: int
-        var s = (x%60).toString();
-        var m = Math.floor(x/60).toString();
-        return m+":"+s;
-    }
-    var ac = { 1: "Luggage", 2: "Parking", 3: "Crowd", 4: "Weapons", 5: "Fire", 6: "Smoke", 7: "smoking", 8: "Luggage", 9: "Peeking" };
-    var socket = io.connect('http://localhost:6869');      
-    var mem = JSON.parse(localStorage.getItem('myStorage'));
-    var t = $('table#table_id').DataTable({
-                                    "iDisplayLength": 12,
-                                    columnDefs: [
-                                    {
-                                            targets: 1,
-                                            className: 'dt-body-center'
-                                        },
-                                        {
-                                            targets: 2,
-                                            className: 'dt-body-center'
-                                        },
-                                        {
-                                            targets: 3,
-                                            className: 'dt-body-center'
-                                        },
-                                        {
-                                            targets: 0,
-                                            className: 'dt-body-center'
-                                        }
-                                    ]
-                                    });
-    t.order( [ 3, 'asc' ] );
-    socket.on('connect', function() {
-        socket.emit('getStreamSummary', mem.userName);
-    });
-    socket.on('summary', function(msg) {
-        t.row.add( [
-            ac[msg["a"]],
-            tt(msg["s"]),
-            tt(msg["e"]),
-            msg["n"]
-        ] ).draw( false );
-    });
+    <div class="container">
+        <div class="row">
+            <div class="col-md-11" style="padding: 25px 25px 10px 25px;background: linear-gradient(to top, #b3b3b3 , #fefeff);border-radius: 15px 15px 15px 15px; box-shadow: 0 4px 10px 4px rgba(193, 189, 186, 0.3); margin-left: 65px">
+                <table id="table_id" class="display">
+                    <thead>
+                        <tr>
+                            <th class="dt-head-center">Action</th>
+                            <th class="dt-head-center">Start time</th>
+                            <th class="dt-head-center">End time</th>
+                            <th class="dt-head-center">Recording</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
 
-</script>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/index.js"></script>
+
+    <script type="text/javascript" src="../../js/socket.io.min.js"></script>
+    <script>
+
+        function tt(x) {
+            //x: int
+            var s = (x % 60).toString();
+            var m = Math.floor(x / 60).toString();
+            return m + ":" + s;
+        }
+        var ac = { 1: "Luggage", 2: "Parking", 3: "Crowd", 4: "Weapons", 5: "Fire", 6: "Smoke", 7: "smoking", 8: "Luggage", 9: "Peeking" };
+        var socket = io.connect('http://localhost:6869');
+        var mem = JSON.parse(localStorage.getItem('myStorage'));
+        var t = $('table#table_id').DataTable({
+            "iDisplayLength": 12,
+            columnDefs: [
+                {
+                    targets: 1,
+                    className: 'dt-body-center'
+                },
+                {
+                    targets: 2,
+                    className: 'dt-body-center'
+                },
+                {
+                    targets: 3,
+                    className: 'dt-body-center'
+                },
+                {
+                    targets: 0,
+                    className: 'dt-body-center'
+                }
+            ]
+        });
+        t.order([3, 'asc']);
+        socket.on('connect', function () {
+            socket.emit('getStreamSummary', mem.userName);
+        });
+        socket.on('summary', function (msg) {
+            t.row.add([
+                ac[msg["a"]],
+                tt(msg["s"]),
+                tt(msg["e"]),
+                msg["n"]
+            ]).draw(false);
+        });
+
+
+    </script>
 
 
 </body>
