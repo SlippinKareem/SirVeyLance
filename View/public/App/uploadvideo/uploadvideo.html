@@ -13,14 +13,16 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
     <style>
-          html, body {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;  
-}
+        html,
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
         .upload-btn-wrapper {
             position: relative;
             overflow: hidden;
@@ -53,6 +55,7 @@
             padding-bottom: 0px;
             padding: 0px;
         }
+
         .rec-btn {
             margin-top: 5px;
             margin-left: 10px;
@@ -78,7 +81,7 @@
 </head>
 
 <body style="background: linear-gradient(to right, #000000 , #00a6cf)">
-        <br/>
+    <br/>
     <div class="container">
         <div class="row">
             <div class="col-md-11" style="padding: 25px 25px 10px 25px;background: linear-gradient(to top, #b3b3b3 , #fefeff);border-radius: 15px 15px 15px 15px; box-shadow: 0 4px 10px 4px rgba(193, 189, 186, 0.3); margin-left: 65px">
@@ -94,23 +97,26 @@
                         <div id="cont" style="background-color: rgb(255, 255, 255); height: 32px; width: 640px; margin-left: 8px;">
 
 
-                                <div class="upload-btn-wrapper" style="margin-top: 0px">
-                                        <button class="btn"><i style="font-size:20px;color:dark grey" class="fa">&#xf093;</i></button>
-                                        <input type="file" id="vid" name="vid" />
-                                      </div>
-                                                                            
+                            <div class="upload-btn-wrapper" style="margin-top: 0px">
+                                <button class="btn">
+                                    <i style="font-size:20px;color:dark grey" class="fa">&#xf093;</i>
+                                </button>
+                                <input type="file" id="vid" name="vid" />
+                            </div>
+
 
 
 
                             <div class="rec-btn" onclick="st()" style="padding: 10px; color: darkgrey">
-                                                                         
+
                                 <p style="margin-left: 520px; margin-top: 0px; color:darkgray; ">
-                                    <span id="seconds">00</span>:<span id="tens">00</span>
+                                    <span id="seconds">00</span>:
+                                    <span id="tens">00</span>
                                 </p>
 
                             </div>
                         </div>
-                    
+
 
 
 
@@ -176,7 +182,6 @@
         var socket = io.connect('http://localhost:6869');
         var socket2 = io.connect('http://localhost:4125');
         socket.on('connect', function () {
-            console.log("connected successfully!!!!");
 
         });
         socket.on('fail', function () {
@@ -203,7 +208,6 @@
             }
 
             if (tens > 59) {
-                console.log("seconds");
                 seconds++;
                 appendSeconds.innerHTML = "0" + seconds;
                 tens = 0;
@@ -217,24 +221,23 @@
         }
 
         var yy = document.getElementById("vid");
-        yy.onchange = function(e){
+        yy.onchange = function (e) {
             var now = new Date();
-                var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
-                var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
-                for ( var i = 1; i < 3; i++ ) {
-                if ( time[i] < 10 ) {
+            var date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
+            var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
+            for (var i = 1; i < 3; i++) {
+                if (time[i] < 10) {
                     time[i] = "0" + time[i];
                 }
-                }
-                var yt = date[2] + "-" + date[0] + "-" + date[1] + "-" + time.join("-");
+            }
+            var yt = date[2] + "-" + date[0] + "-" + date[1] + "-" + time.join("-");
 
-                socket2.emit('nn');
-                socket.emit('nn', {'gt': yt});
+            socket2.emit('nn');
+            socket.emit('nn', { 'gt': yt });
 
             var serverUrl = 'http://localhost:6869/uploadVideo';
             var formData = new FormData();
             formData.append('file', yy.files[0]);
-            console.log(formData);
 
             fetch(serverUrl, {
                 method: 'POST',
@@ -254,26 +257,26 @@
             );
 
         }
-        function tt(x){
-        //x: int
-        var s = (x%60).toString();
-        var m = Math.floor(x/60).toString();
-        return m+":"+s;
-    }
+        function tt(x) {
+            //x: int
+            var s = (x % 60).toString();
+            var m = Math.floor(x / 60).toString();
+            return m + ":" + s;
+        }
 
         var ac = { 1: "Luggage", 2: "Parking", 3: "Crowd", 4: "Weapons", 5: "Fire", 6: "Smoke", 7: "smoking", 8: "Luggage", 9: "Peeking" };
         var t = $('table#table_id').DataTable({
-                                    columnDefs: [
-                                    {
-                                            targets: 0,
-                                            className: 'dt-body-center'
-                                        },
-                                        {
-                                            targets: 1,
-                                            className: 'dt-body-center'
-                                        }
-                                    ]
-                                    });
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: 'dt-body-center'
+                },
+                {
+                    targets: 1,
+                    className: 'dt-body-center'
+                }
+            ]
+        });
         t.order([1, 'desc']);
         socket.on('update', function (msg) {
             t.row.add([
@@ -285,21 +288,20 @@
         var x = 0;
         var inter;
         function st() {
-            console.log(x)
             if (x == 0) {
                 t.clear().draw();
                 var now = new Date();
-                var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
-                var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
-                for ( var i = 1; i < 3; i++ ) {
-                if ( time[i] < 10 ) {
-                    time[i] = "0" + time[i];
-                }
+                var date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
+                var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
+                for (var i = 1; i < 3; i++) {
+                    if (time[i] < 10) {
+                        time[i] = "0" + time[i];
+                    }
                 }
                 var yt = date[2] + "-" + date[0] + "-" + date[1] + "-" + time.join("-");
 
                 socket2.emit('start');
-                socket.emit('startRec', {'gt': yt});
+                socket.emit('startRec', { 'gt': yt });
 
                 inter = setInterval(function () {
                     Webcam.snap(function (data_uri) {
@@ -337,17 +339,17 @@
                 clearInterval(Interval);
                 Interval = setInterval(startTimer, 1000);
 
-                
+
 
                 document.getElementsByClassName('rec-btn')[0].style.backgroundColor = "red";
             } else {
                 fetch('http://localhost:4125/stop', {
-                            method: 'POST'
-                        }).then(
-                            success => console.log('recording upload complete.')
-                        ).catch(
-                            error => console.error('an upload error occurred!')
-                        );
+                    method: 'POST'
+                }).then(
+                    success => console.log('recording upload complete.')
+                ).catch(
+                    error => console.error('an upload error occurred!')
+                );
                 clearInterval(inter);
                 x = 0;
                 document.getElementsByClassName('rec-btn')[0].style.backgroundColor = "#bbb";
